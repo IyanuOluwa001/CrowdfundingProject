@@ -1,44 +1,53 @@
-VotingContract: Decentralized Voting System
-Welcome to the VotingContract, a decentralized voting system built on Ethereum using Solidity (0.8.2–0.9.0). Designed for secure, token-based governance, it allows token holders to vote on proposals with a one-vote-per-address rule. Deployed on the Sepolia testnet, this contract ensures transparency and integrity in voting processes, ideal for DAOs or community governance.
+Description:
+The Crowdfunding contract (Solidity 0.8.20) enables decentralized crowdfunding on Ethereum's Sepolia testnet. Users contribute ETH before a deadline, tracked via contributions. If the fundingGoal is met, the owner withdraws funds; otherwise, contributors can refund. Events log contributions and withdrawals, ensuring transparency for secure crowdfunding.
+
+Crowdfunding: Decentralized Crowdfunding Platform
+The Crowdfunding contract is a secure, decentralized crowdfunding platform built with Solidity (0.8.20) for Ethereum, deployed on Sepolia. It allows users to contribute ETH toward a funding goal within a set deadline. The owner withdraws funds if the goal is met; otherwise, contributors can claim refunds.
 
 🚀 Features:
-Token-Based Voting: Only token holders can vote, enforced by the onlyTokenHolders modifier.
-One Vote Per Address: Prevents double voting using the hasVoted mapping.
-Proposal Voting: Tracks votes per proposal via proposalVotes.
-Transparency: Emits VoteCast events for each vote.
-Eligibility Check: checkEligibility verifies voter token balance.
-Vote Counting: getVotes returns total votes for a proposal.
-Token Management: Owner can mint tokens via addTokens.
+ETH Contributions: Users send ETH to fund the campaign before the deadline.
+Funding Goal Tracking: Monitors totalContributed against fundingGoal.
+Refunds: Contributors can reclaim ETH if the goal isn’t reached post-deadline.
+Owner Withdrawal: Owner can withdraw funds post-deadline if the goal is met, only once.
+Transparency: Logs contributions (ContributionReceived) and withdrawals (FundsWithdrawn).
+Individual Tracking: Tracks each contributor’s ETH via contributions mapping.
+Sepolia Deployment: Runs on Sepolia testnet for safe testing.
 
 🛠 Smart Contract Functions:
-constructor(): Initializes the contract, minting 100 tokens to the deployer.
-addTokens(address user, uint256 amount): Mints tokens to a user (owner-only).
-vote(uint proposalId): Casts a vote for a proposal, restricted to token holders who haven’t voted.
-getVotes(uint proposalId): Returns the vote count for a proposal.
-checkEligibility(address voter): Checks if an address holds tokens and can vote.
-Event: VoteCast(address voter, uint proposalId) logs each vote.
+constructor(uint _durationInMinutes, uint _fundingGoalInEther): Sets owner, deadline, and funding goal (in ETH).
+contribute() payable: Accepts ETH contributions before deadline, tracks amounts, and updates goalReached.
+withdrawFunds(): Allows owner to withdraw funds post-deadline if goal is met, restricted to once.
+refund(): Refunds contributors post-deadline if goal isn’t met, resetting their contribution.
+Events: ContributionReceived(address contributor, uint amount): Logs contributions.
+FundsWithdrawn(address owner, uint amount): Logs owner withdrawals.
 
 🔒 Security Measures:
-Access Control: onlyTokenHolders modifier ensures only token holders vote.
-Vote Integrity: hasVoted prevents double voting.
-Owner Privileges: Only the owner can mint tokens via addTokens.
-Environment Security: .env files with private keys and API keys are excluded via .gitignore.
-Contract Verification: Deployed on Sepolia and verifiable on Etherscan.
-Safe Design: Uses Solidity’s safe math and explicit checks to prevent overflows.
+Access Control: onlyOwner modifier restricts withdrawals to the contract owner.
+Time Constraints: beforeDeadline and afterDeadline modifiers enforce contribution and withdrawal timing.
+Single Withdrawal: fundsWithdrawn prevents multiple owner withdrawals.
+Safe Transfers: Uses call with checks for secure ETH transfers, reverting on failure.
+Environment Security: .env files (e.g., private keys, API keys) are excluded via .gitignore.
+Verification: Deployed on Sepolia, verifiable on Etherscan for transparency.
+Safe Math: Solidity 0.8.20 ensures overflow protection.
 
-🏗 Setup and Installation
-
-Prerequisites:
-MetaMask (configured for Sepolia)
-Sepolia ETH (from https://sepoliafaucet.com)
-Alchemy account (for RPC)
+🏗 Setup:
+Hardhat
+MetaMask (Sepolia-configured)
+Sepolia ETH (https://sepoliafaucet.com)
+Alchemy account
 
 Testing:
-Mint Tokens: Use addTokens to distribute tokens to test accounts.
-Vote: Call vote with a proposalId using a token-holding account.
-Check Votes: Use getVotes to verify vote counts.
-Eligibility: Test checkEligibility for voter status.
-Events: Monitor VoteCast events on Etherscan or a frontend.
+Contribute ETH with contribute before the deadline.
+Check totalContributed and goalReached via contract calls.
+Withdraw funds with withdrawFunds (owner, post-deadline, goal met).
+Refund with refund (post-deadline, goal not met).
+Monitor events on Etherscan.
 
-📜 License:
-MIT License.
+📍 Live Deployment:
+Contract: Deploy on Sepolia.
+Etherscan: Verify at https://sepolia.etherscan.io/address/
+
+📜 License
+MIT License
+Powered by Sepolia testnet and Alchemy.
+
